@@ -6,6 +6,7 @@ namespace Hidden_Objects.Input
 {
     public class InputHandler : MonoBehaviour
     {
+        public Vector2 WorldPosition { get; private set; }
         public event Action OnTouched;
 
         private void Update()
@@ -17,21 +18,15 @@ namespace Hidden_Objects.Input
         {
             if (Touchscreen.current.primaryTouch.press.isPressed)
             {
-                if (OnTouched != null)
-                {
-                    OnTouched();
-                }
-
+                OnTouched?.Invoke();
                 GetPosition();
             }
         }
 
-        private Vector2 GetPosition()
+        public void GetPosition()
         {
             Vector2 touchPosition = Touchscreen.current.primaryTouch.position.ReadValue();
-            Vector2 worldPosition = Camera.main.ScreenToWorldPoint(touchPosition);
-
-            return worldPosition;
+            WorldPosition = Camera.main.ScreenToWorldPoint(touchPosition);
         }
     }    
 }

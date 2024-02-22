@@ -144,3 +144,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _hiddenObjectData: {fileID: 11400000, guid: fb800bccbf6c44135bc6407557118962, type: 2}
+  IsHidden: 0

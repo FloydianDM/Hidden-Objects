@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Hidden_Objects.Core
@@ -7,6 +5,13 @@ namespace Hidden_Objects.Core
     public class DataManager : MonoBehaviour
     {
         [SerializeField] private HiddenObjectData _hiddenObjectData;
+        
+        public bool IsHidden;
+
+        private void Start()
+        {
+            IsHidden = _hiddenObjectData.IsHidden;
+        }
 
         public string GetName()
         {
@@ -18,14 +23,9 @@ namespace Hidden_Objects.Core
             return _hiddenObjectData.HiddenObjectImage;
         }
 
-        public bool GetIsHidden()
+        public void SetIsHidden(bool shouldHidden)
         {
-            return _hiddenObjectData.IsHidden;
-        }
-
-        public void SetIsHidden(bool isHidden)
-        {
-            _hiddenObjectData.IsHidden = isHidden;
+            IsHidden = shouldHidden;
         }
     }
 }

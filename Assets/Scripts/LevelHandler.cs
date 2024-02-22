@@ -8,9 +8,9 @@ namespace Hidden_Objects.Core
         public static LevelHandler Instance;
         
         [SerializeField] private List<GameObject> _allObjects;
-        [SerializeField] private List<GameObject> _activeHiddenObjects;
         [SerializeField] private int _countOfHide = 5;
 
+        public List<GameObject> ActiveHiddenObjects { get; private set; }
         private string _hiddenObjectsTag = "HiddenObjects";
 
         private void Awake()
@@ -21,7 +21,7 @@ namespace Hidden_Objects.Core
         private void Start()
         {
             _allObjects = new();
-            _activeHiddenObjects = new();
+            ActiveHiddenObjects = new();
 
             SetObjectsList();
             SetActiveHiddenObjectsList();
@@ -29,19 +29,21 @@ namespace Hidden_Objects.Core
 
         private void ManageSingleton()
         {
-            if (Instance == null)
-            {
-                Instance = this;
-            }
-            else
+            if (Instance != null && Instance != this)
             {
                 gameObject.SetActive(false);
                 Destroy(gameObject);
+            }
+            else
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
             }
         }
        
         private void SetObjectsList()
         {
+            _allObjects.Clear();
             GameObject[] objects = GameObject.FindGameObjectsWithTag(_hiddenObjectsTag);
 
             foreach (var obj in objects)
@@ -53,24 +55,47 @@ namespace Hidden_Objects.Core
 
         private void SetActiveHiddenObjectsList()
         {   
+            ActiveHiddenObjects.Clear();
+
             int i = 0;
 
-            while (i < _countOfHide)
+            while (true)
             {
                 int randomIndex = Random.Range(0, _allObjects.Count);
 
-                if (_allObjects[randomIndex].GetComponent<DataManager>().GetIsHidden() == false)
+                if (_allObjects[randomIndex].GetComponent<DataManager>().IsHidden == false)
                 {
-                    _activeHiddenObjects.Add(_allObjects[randomIndex]); 
+                    ActiveHiddenObjects.Add(_allObjects[randomIndex]); 
+                    _allObjects[randomIndex].GetComponent<DataManager>().SetIsHidden(true);
                     i++;      
+                }
+                else
+                {
+                    continue;
+                }
+                
+                if (i == _countOfHide)
+                {
+                    break;
                 }
             }
 
-            foreach (var hiddenObject in _activeHiddenObjects)
+            foreach (var hiddenObject in ActiveHiddenObjects)
             {
-                hiddenObject.GetComponent<DataManager>().SetIsHidden(true);
-                hiddenObject.GetComponent<Collider2D>().enabled = true;
+                MakeHidden(hiddenObject);
             }
+        }
+
+        private void MakeHidden(GameObject hiddenObject)
+        {
+            hiddenObject.GetComponent<Collider2D>().enabled = true;
+            hiddenObject.GetComponent<SpriteRenderer>().enabled = false;
+        }
+
+        public void MakeVisible(GameObject hiddenObject)
+        {
+            hiddenObject.GetComponent<Collider2D>().enabled = false;
+            hiddenObject.GetComponent<SpriteRenderer>().enabled = true;
         }
     }
 }
