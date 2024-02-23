@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,11 +8,15 @@ namespace Hidden_Objects.Core
     {
         public static LevelHandler Instance;
         
-        [SerializeField] private List<GameObject> _allObjects;
         [SerializeField] private int _countOfHide = 5;
 
+        private List<GameObject> _allObjects;
         public List<GameObject> ActiveHiddenObjects { get; private set; }
-        private string _hiddenObjectsTag = "HiddenObjects";
+        private int _countOfFound = 0;
+        private ScoreManager _scoreManager;
+        private GameManager _gameManager;
+        public const string HIDDEN_OBJECTS_TAG = "HiddenObjects";
+        public event Action OnActiveHiddenSet;
 
         private void Awake()
         {
@@ -20,11 +25,13 @@ namespace Hidden_Objects.Core
 
         private void Start()
         {
+            _scoreManager = FindObjectOfType<ScoreManager>();
+            _gameManager = FindObjectOfType<GameManager>();
+
             _allObjects = new();
             ActiveHiddenObjects = new();
 
             SetObjectsList();
-            SetActiveHiddenObjectsList();
         }
 
         private void ManageSingleton()
@@ -44,13 +51,15 @@ namespace Hidden_Objects.Core
         private void SetObjectsList()
         {
             _allObjects.Clear();
-            GameObject[] objects = GameObject.FindGameObjectsWithTag(_hiddenObjectsTag);
+            GameObject[] objects = GameObject.FindGameObjectsWithTag(HIDDEN_OBJECTS_TAG);
 
             foreach (var obj in objects)
             {
                 obj.GetComponent<Collider2D>().enabled = false;
                 _allObjects.Add(obj);
             }
+
+            SetActiveHiddenObjectsList();
         }
 
         private void SetActiveHiddenObjectsList()
@@ -61,7 +70,7 @@ namespace Hidden_Objects.Core
 
             while (true)
             {
-                int randomIndex = Random.Range(0, _allObjects.Count);
+                int randomIndex = UnityEngine.Random.Range(0, _allObjects.Count);
 
                 if (_allObjects[randomIndex].GetComponent<DataManager>().IsHidden == false)
                 {
@@ -82,20 +91,30 @@ namespace Hidden_Objects.Core
 
             foreach (var hiddenObject in ActiveHiddenObjects)
             {
-                MakeHidden(hiddenObject);
+                PrepareHidden(hiddenObject);
             }
+
+            OnActiveHiddenSet?.Invoke();
         }
 
-        private void MakeHidden(GameObject hiddenObject)
+        private void PrepareHidden(GameObject hiddenObject)
         {
             hiddenObject.GetComponent<Collider2D>().enabled = true;
-            hiddenObject.GetComponent<SpriteRenderer>().enabled = false;
+            hiddenObject.GetComponent<SpriteRenderer>().enabled = true;
         }
 
-        public void MakeVisible(GameObject hiddenObject)
+        public void FindHidden(GameObject hiddenObject)
         {
             hiddenObject.GetComponent<Collider2D>().enabled = false;
-            hiddenObject.GetComponent<SpriteRenderer>().enabled = true;
+            hiddenObject.GetComponent<SpriteRenderer>().enabled = false;
+            
+            _countOfFound++;
+            _scoreManager.AddScore(100);
+
+            if (_countOfFound >= _countOfHide)
+            {
+                _gameManager.ProcessGameOver();
+            }
         }
     }
 }

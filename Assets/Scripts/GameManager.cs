@@ -8,10 +8,10 @@ namespace Hidden_Objects.Core
     {
         public static GameManager Instance;
 
-        public event Action OnGameStart;
         private TimeHandler _timeHandler;
         public const string GAME_SCENE = "Scene_Game";
         public const string END_SCENE = "Scene_End";
+        public event Action OnGameStart;
 
         public void Awake()
         {
@@ -57,7 +57,6 @@ namespace Hidden_Objects.Core
         {
             Application.Quit();
         }
-
     }
 }
 

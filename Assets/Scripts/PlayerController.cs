@@ -21,7 +21,7 @@ namespace Hidden_Objects.Core
             {
                 if (obj.GetComponent<Collider2D>().bounds.Contains(_inputHandler.WorldPosition))
                 {
-                    _levelHandler.MakeVisible(obj);
+                    _levelHandler.FindHidden(obj);
                 }
             }
         }

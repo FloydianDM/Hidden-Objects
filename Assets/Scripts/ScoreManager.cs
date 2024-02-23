@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Hidden_Objects.Core
@@ -6,10 +7,12 @@ namespace Hidden_Objects.Core
     {
         public int Score { get; private set; }
         public const string HIGH_SCORE_KEY = "HighScore";
+        public event Action OnScoreChanged;
 
         public void AddScore(int addedScore)
         {
             Score += addedScore;
+            OnScoreChanged?.Invoke();
         }
 
         public void SaveHighScore()
