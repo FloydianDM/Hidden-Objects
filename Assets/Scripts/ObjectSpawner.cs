@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,7 +27,7 @@ namespace Hidden_Objects.Core
 
             while (true)
             {
-                int randomPoolIndex = UnityEngine.Random.Range(0, _objectPool.Count);
+                int randomPoolIndex = Random.Range(0, _objectPool.Count);
 
                 if (!_spawnedIndexes.Contains(randomPoolIndex))
                 {
@@ -51,8 +50,8 @@ namespace Hidden_Objects.Core
 
             while (true)
             {
-                x = UnityEngine.Random.Range(_spawnRange[0].x, _spawnRange[0].y);
-                y = UnityEngine.Random.Range(_spawnRange[1].x, _spawnRange[1].y);
+                x = Random.Range(_spawnRange[0].x, _spawnRange[0].y);
+                y = Random.Range(_spawnRange[1].x, _spawnRange[1].y);
 
                 Vector2 spawnPoint = new Vector2(x, y);
 
