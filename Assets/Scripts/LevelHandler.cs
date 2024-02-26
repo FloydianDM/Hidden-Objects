@@ -5,9 +5,7 @@ using UnityEngine;
 namespace Hidden_Objects.Core
 {
     public class LevelHandler : MonoBehaviour
-    {
-        public static LevelHandler Instance;
-        
+    { 
         [SerializeField] private int _countOfHide = 5;
 
         private List<GameObject> _allObjects;
@@ -18,11 +16,6 @@ namespace Hidden_Objects.Core
         public const string HIDDEN_OBJECTS_TAG = "HiddenObjects";
         public event Action OnActiveHiddenSet;
 
-        private void Awake()
-        {
-            ManageSingleton();
-        }
-
         private void Start()
         {
             _scoreManager = FindObjectOfType<ScoreManager>();
@@ -32,20 +25,6 @@ namespace Hidden_Objects.Core
             ActiveHiddenObjects = new();
 
             SetObjectsList();
-        }
-
-        private void ManageSingleton()
-        {
-            if (Instance != null && Instance != this)
-            {
-                gameObject.SetActive(false);
-                Destroy(gameObject);
-            }
-            else
-            {
-                Instance = this;
-                DontDestroyOnLoad(gameObject);
-            }
         }
        
         private void SetObjectsList()

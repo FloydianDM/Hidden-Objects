@@ -36,7 +36,8 @@ namespace Hidden_Objects.Core
         private void Start()
         {
             _gameManager = FindObjectOfType<GameManager>();
-            _gameManager.OnGameStart += StartTimer;        
+            _gameManager.OnGameStart += StartTimer;
+            _gameManager.OnGameStop += StopTimer;        
         }
 
         private void Update()
@@ -47,15 +48,27 @@ namespace Hidden_Objects.Core
             }
         }
 
-        private void SetTimer()
+        public void SetTimer()
         {
-            float gameTime = 60 * _gameTimeInMinutes;
+            float gameTime;
+
+            if (PlayerPrefs.HasKey(GameManager.ENHANCED_TIME_KEY))
+            {
+                float enhancedTime = PlayerPrefs.GetFloat(GameManager.ENHANCED_TIME_KEY);
+                gameTime = 60 * enhancedTime;
+
+                PlayerPrefs.DeleteKey(GameManager.ENHANCED_TIME_KEY);   // job done
+            }
+            else
+            {
+                gameTime = 60 * _gameTimeInMinutes;
+            }
+
             Timer = gameTime;
         }
 
         private void StartTimer()
         {
-            SetTimer();
             _isTimerStarted = true;
         }
 
@@ -74,10 +87,9 @@ namespace Hidden_Objects.Core
             }
         }
 
-        public void ResetTimer()
+        private void StopTimer()
         {
             _isTimerStarted = false;
-            SetTimer();
         }
     } 
 }

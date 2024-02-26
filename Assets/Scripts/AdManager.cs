@@ -5,6 +5,10 @@ namespace Hidden_Objects.Core
 {
     public class AdManager : MonoBehaviour, IUnityAdsInitializationListener, IUnityAdsLoadListener, IUnityAdsShowListener
     {
+        // The script is attached to GameManager objects, no need to make it singleton separately!
+
+        public static AdManager Instance;
+
         private string _androidGameId = "5561947";
         private string _iOSGameId = "5561946";
         private bool _isTestMode = true;
@@ -17,7 +21,22 @@ namespace Hidden_Objects.Core
 
         private void Awake()
         {
-            InitializeAds();
+            ManageSingleton();
+        }
+
+        private void ManageSingleton()
+        {
+            if (Instance != null && Instance != this)
+            {
+                gameObject.SetActive(false);
+                Destroy(gameObject);
+            }
+            else
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+                InitializeAds();
+            }
         }
 
         private void InitializeAds()
@@ -70,6 +89,7 @@ namespace Hidden_Objects.Core
             {
                 // reward player
 
+                _gameManager.AddTime(3);
             }
         }
 
@@ -79,6 +99,7 @@ namespace Hidden_Objects.Core
             {
                 // reward player
 
+                _gameManager.AddTime(3);
             }
         }
 
@@ -88,6 +109,7 @@ namespace Hidden_Objects.Core
             {
                 // reward player
 
+                _gameManager.AddTime(3);
             }
         }
 
