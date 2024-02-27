@@ -10,7 +10,6 @@ namespace Hidden_Objects.Core
         [SerializeField] private float _gameTimeInMinutes = 2f;
 
         public float Timer { get; private set; }
-        private GameManager _gameManager;
         private bool _isTimerStarted;
         public event Action OnTimeFinished;
 
@@ -32,14 +31,7 @@ namespace Hidden_Objects.Core
                 DontDestroyOnLoad(gameObject);
             }
         }
-
-        private void Start()
-        {
-            _gameManager = FindObjectOfType<GameManager>();
-            _gameManager.OnGameStart += StartTimer;
-            _gameManager.OnGameStop += StopTimer;        
-        }
-
+        
         private void Update()
         {
             if (_isTimerStarted)
@@ -67,7 +59,7 @@ namespace Hidden_Objects.Core
             Timer = gameTime;
         }
 
-        private void StartTimer()
+        public void StartTimer()
         {
             _isTimerStarted = true;
         }
@@ -87,7 +79,7 @@ namespace Hidden_Objects.Core
             }
         }
 
-        private void StopTimer()
+        public void StopTimer()
         {
             _isTimerStarted = false;
         }

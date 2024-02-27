@@ -19,11 +19,11 @@ namespace Hidden_Objects.Core
         {
             if (PlayerPrefs.HasKey(HIGH_SCORE_KEY) && Score > PlayerPrefs.GetInt(HIGH_SCORE_KEY))
             {
-                PlayerPrefs.SetInt(HIGH_SCORE_KEY, 0);
+                PlayerPrefs.SetInt(HIGH_SCORE_KEY, Score);
             }
             else if (!PlayerPrefs.HasKey(HIGH_SCORE_KEY))
             {
-                PlayerPrefs.SetInt(HIGH_SCORE_KEY, 0);    
+                PlayerPrefs.SetInt(HIGH_SCORE_KEY, Score);    
             }
         }
     }
